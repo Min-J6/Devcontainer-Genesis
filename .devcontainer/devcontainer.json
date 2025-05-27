@@ -1,0 +1,63 @@
+{
+    // ------------------------------------------------
+    // 기본 컨테이너 설정 ( Genesis-world )
+    // ------------------------------------------------
+    "name": "Python Genesis-world",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "remoteUser": "root",
+    "initializeCommand": "xhost +local:root",
+    "mounts": [
+        "source=${env:HOME}/.ssh,target=/root/.ssh,type=bind"
+    ],
+
+
+
+    // ------------------------------------------------
+    // 컨테이너 실행 인자 (그래픽스 및 GPU 지원용)
+    // ------------------------------------------------
+    "runArgs": [
+        "-e", "DISPLAY=${env:DISPLAY}",
+        "-e", "NVIDIA_DRIVER_CAPABILITIES=all",
+        "-e", "NVIDIA_VISIBLE_DEVICES=all",
+        "-e", "LIBGL_ALWAYS_INDIRECT=0",
+        "-e", "QT_X11_NO_MITSHM=1",
+        "-e", "SDL_VIDEODRIVER=x11",
+        "-e", "SDL_HINT_VIDEODRIVER=x11",
+        "-e", "XDG_RUNTIME_DIR=/tmp/runtime-root",
+        "-e", "VK_LAYER_PATH=/etc/vulkan/explicit_layer.d",
+        "-e", "VK_ICD_FILENAMES=/etc/vulkan/icd.d/nvidia_icd.json",
+        "-e", "HOME=/home",
+
+        "-v", "/tmp/.X11-unix:/tmp/.X11-unix",
+        "-v", "/usr/share/vulkan/icd.d:/etc/vulkan/icd.d",
+        "-v", "/usr/share/vulkan/implicit_layer.d:/etc/vulkan/implicit_layer.d",
+        "-v", "/usr/share/vulkan/explicit_layer.d:/etc/vulkan/explicit_layer.d",
+        "-v", "/etc/localtime:/etc/localtime:ro",
+        "-v", "/home:/home",
+
+        "--net", "host",
+        "--device", "/dev/dri:/dev/dri",
+        "--gpus", "all",
+        "--user", "root",
+        "-P"
+    ],
+
+
+
+    // ------------------------------------------------
+    // 컨테이너 환경 변수
+    // ------------------------------------------------
+    "containerEnv": {
+        "NVIDIA_DRIVER_CAPABILITIES": "all",
+        "NVIDIA_VISIBLE_DEVICES": "all",
+        "LIBGL_ALWAYS_INDIRECT": "0",
+        "QT_X11_NO_MITSHM": "1",
+        "SDL_VIDEODRIVER": "x11",
+        "SDL_HINT_VIDEODRIVER": "x11",
+        "VK_LAYER_PATH": "/etc/vulkan/explicit_layer.d",
+        "VK_ICD_FILENAMES": "/etc/vulkan/icd.d/nvidia_icd.json",
+        "HOME": "/home"
+    },
+}
